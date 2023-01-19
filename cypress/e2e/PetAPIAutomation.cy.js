@@ -1,7 +1,7 @@
 
 describe('PetAPI HTTP Method Automation ',function(){
 
-     //test1
+     //test1 Post method- Add a new pet to the store
      it('POSTAddpet',function(){
         cy.request({
             method : 'POST',
@@ -37,11 +37,11 @@ describe('PetAPI HTTP Method Automation ',function(){
           cy.log(JSON.stringify(response.body))
         })
     })
-    //test2
+    //test2 Find Pet By status
     it('GETBystatus',function(){
         cy.request({
             method : 'GET',
-            url : 'http://petstore3.swagger.io/api/v3/pet/findByStatus',
+            url : 'https://petstore3.swagger.io/api/v3/pet/findByStatus',
             qs:{
                 "status" : "available"
             }
@@ -55,6 +55,47 @@ describe('PetAPI HTTP Method Automation ',function(){
           cy.log(JSON.stringify(response.body))
         })
     })   
+    
+    // Find Pet By tags
+    it('GETByTags',function(){
+      cy.request({
+          method : 'GET',
+          url : 'https://petstore3.swagger.io/api/v3/pet/findByTags',
+          qs:
+          {
+            "tags": "tag1",
+            //"tags": "tag3"
+        }
+ 
+      }).then(function(response){
+         console.log(response.url);
+        expect(response.status).to.eq(200)
+        expect(response.headers).to.have.property('content-type')
+        var responseBody = (response.body)      
+        expect(responseBody[0].tags[0].name).to.eq('tag1')
+        cy.log(JSON.stringify(response.body))
+      })
+  })
+   
+   ///
+   // Find Pet By PetID
+   it('GETByPetId',function(){
+    let petid = 10
+    cy.request({
+        method : 'GET',
+        url : 'https://petstore3.swagger.io/api/v3/pet/'+ petid +'',
+        
+
+    }).then(function(response){
+       console.log(response.url);
+      expect(response.status).to.eq(200)
+      expect(response.headers).to.have.property('content-type')          
+      expect(response.body).to.have.property('id')
+      cy.log(JSON.stringify(response.body))
+    })
+})
+
+
     //test3
     it('POSTUpdatepetBYID',function(){
         cy.request({
